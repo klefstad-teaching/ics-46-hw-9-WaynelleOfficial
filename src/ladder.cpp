@@ -22,6 +22,7 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
 }
 //Start by examining ladders that are one step away from the original word, where only one letter is changed
 bool is_adjacent(const string& word1, const string& word2){
+    if (word1 == word2) return true;
     int len_word1 = word1.size();
     int len_word2 = word2.size();
     
@@ -47,7 +48,8 @@ bool is_adjacent(const string& word1, const string& word2){
             j++;
         }
     }
-    return diff == 1 || (diff == 0 && j == longer.size() - 1); //in case the last letter of the longer word is the letter change
+    // return diff == 1 || (diff == 0 && j == longer.size() - 1); //in case the last letter of the longer word is the letter change
+    return true;
 
 }
 
@@ -115,10 +117,7 @@ void print_word_ladder(const vector<string>& ladder){
     }
     
     for (size_t i = 0; i < ladder.size(); i++){
-        cout << ladder[i];
-        if (i < ladder.size() - 1){
-            cout << " -> ";
-        }
+        cout << "Word ladder found:" << ladder[i] << " ";
     }
 }
 
