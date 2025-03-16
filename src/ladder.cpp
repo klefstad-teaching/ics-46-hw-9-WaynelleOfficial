@@ -10,38 +10,42 @@ void error(string word1, string word2, string msg){
     cerr << "Whoops the problem is" << msg << " for words - " <<word1 << " and " <<word2;
 }
 
+// bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
+//     int diffCount = 0;
+//     for (size_t i = 0; i < str1.size(); i++){
+//         if (str1[i] != str2[i]) {
+//             diffCount++;
+//             if (diffCount > d) return false;
+//         }
+//     }
+//     return diffCount == d;
+// }
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
-    int diffCount = 0;
-    for (size_t i = 0; i < str1.size(); i++){
-        if (str1[i] != str2[i]) {
-            diffCount++;
-            if (diffCount > d) return false;
-        }
-    }
-    return diffCount == d;
-}
-//Start by examining ladders that are one step away from the original word, where only one letter is changed
-bool is_adjacent(const string& word1, const string& word2){
-    if (word1 == word2) return true;
-    int len_word1 = word1.size();
-    int len_word2 = word2.size();
+    if (str1 == str2) return true;
+    int len_word1 = str1.size();
+    int len_word2 = str2.size();
     
     if (abs(len_word2 - len_word1) > 1) return false;
     
-    if (len_word1 == len_word2){ //ok since eq
-        return edit_distance_within(word1,word2,1);
-    }
+    // if (len_word1 == len_word2){ //ok since eq
+    //     return edit_distance_within(str1,str2,1);
+    // }
 
-    size_t i = 0;
-    size_t j = 0;
-    size_t diff = 0;
-    const std::string& longer = (len_word1 > len_word2) ? word1 : word2;
-    const std::string& shorter = (len_word1 > len_word2) ? word2 : word1;
+    int i = 0;
+    int j = 0;
+    int diffCount = 0;
+    const std::string& longer = (len_word1 > len_word2) ? str1 : str2;
+    const std::string& shorter = (len_word1 > len_word2) ? str2 : str1;
+    int len_of_longer = longer.size();
+    int len_of_shorter = shorter.size();
     
-    while (i < shorter.size() && j < longer.size()){
+    while (i < len_of_shorter && j < len_of_longer){
         if (shorter[i] != longer[j]) {
-            diff++;
-            if (diff > 1) return false;
+            diffCount++;
+            if (diffCount > d) return false;
+            if (len_word1 == len_word2) { // If they are the same length, move both indices (substitution case)
+                i++;
+            }
             j++; //move index oflonger word
         } else {
             i++; //move index for both if the chr are the same
@@ -49,8 +53,14 @@ bool is_adjacent(const string& word1, const string& word2){
         }
     }
     // return diff == 1 || (diff == 0 && j == longer.size() - 1); //in case the last letter of the longer word is the letter change
-    return true;
+    //return diffCount == d;
+    return diffCount + (len_of_longer - j) == d;
+    // return true;
 
+}
+//Start by examining ladders that are one step away from the original word, where only one letter is changed
+bool is_adjacent(const string& word1, const string& word2){
+    return edit_distance_within(word1,word2,1);
 }
 
 //Another subtle issue is that you must not reuse words that have been included in a previous shorter ladder.
